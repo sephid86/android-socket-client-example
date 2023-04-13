@@ -14,11 +14,14 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
@@ -73,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             try {
                 String sndMsg = et.getText().toString();
-                Log.d("=============", sndMsg);
+                Log.d("send===========", sndMsg);
                 //데이터 전송
                 PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true);
-                out.println(sndMsg);
+                out.printf(sndMsg);
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -87,10 +90,13 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             while(1>0) {
                 try {
-                    BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    String read = input.readLine();
-                    mHandler.post(new msgUpdate(read));
-                    Log.d("=============", read);
+                    InputStream stream = socket.getInputStream();
+                    byte[] data = new byte[4096];
+
+                    stream.read(data);
+
+                    mHandler.post(new msgUpdate(new String(data)));
+                    Log.d("recv=============", new String(data));
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             this.msg = str;
         }
         public void run() {
-            msgTV.setText(msgTV.getText().toString() + msg + "\n");
+            msgTV.setText(msgTV.getText().toString() + msg);
         }
     }
 
