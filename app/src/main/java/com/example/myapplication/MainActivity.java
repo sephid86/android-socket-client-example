@@ -61,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view)
                 {
+                    String testword = "101<shop>가나다<shop><phone>111<phone><shop>abc<shop><addr>마바사<addr><phone>010<phone>";
+                    String testword2[] = testword.split("<shop>");
+
+                    Log.d("<shop>", testword2[1] );
+                    testword2 = testword.split("<addr>");
+                    Log.d("<addr>", testword2[1] );
+                    testword2 = testword.split("<phone>");
+                    Log.d("<phone>", testword2[1] );
+
                     Thread send = new SendThread();
                     send.start();
                     //Toast.makeText(this, "버튼이 눌렸어요.", Toast.LENGTH_LONG).show();
